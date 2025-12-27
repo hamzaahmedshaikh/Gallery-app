@@ -1,99 +1,99 @@
-:root {
-    --bg-color: #121212;
-    --card-bg: #1e1e1e;
-    --text-primary: #ffffff;
-    --text-secondary: #a0a0a0;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    font-family: 'Inter', sans-serif;
-    line-height: 1.6;
+  font-family: 'Poppins', sans-serif;
+  background: #0b0b0d;
+  color: #fff;
+  overflow-x: hidden;
 }
 
 .hero {
-    padding: 80px 20px 40px;
-    text-align: center;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: radial-gradient(circle at top, #1a1a22, #0b0b0d);
 }
 
 .hero h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(3.5rem, 8vw, 6rem);
-    font-weight: 300;
-    letter-spacing: 8px;
-    margin: 0;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  letter-spacing: 1px;
 }
 
 .hero p {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 1.2rem;
-    color: var(--text-secondary);
+  margin-top: 1rem;
+  opacity: 0.7;
 }
 
-.status-label {
-    padding-left: 40px;
-    font-size: 0.7rem;
-    letter-spacing: 2px;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-    max-width: 1400px;
-    margin: 0 auto 20px auto;
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 3rem;
 }
 
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
-    padding: 0 40px 100px;
-    max-width: 1400px;
-    margin: 0 auto;
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  height: 420px;
+  transform-style: preserve-3d;
 }
 
-/* Image Card Styling */
-.image-card {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+.card img {
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+  transition: transform 1.2s ease;
+  will-change: transform;
 }
 
-.image-card.visible {
-    opacity: 1;
-    transform: translateY(0);
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 40%,
+    rgba(0,0,0,0.6)
+  );
 }
 
-.img-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1; /* Square look like the picture */
-    overflow: hidden;
-    border-radius: 24px; /* Matches the rounded aesthetic */
-    background: var(--card-bg);
+.card:hover img {
+  transform: scale(1.08);
 }
 
-.image-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(100%); /* Cinematic monochrome */
-    transition: transform 0.6s ease, filter 0.6s ease;
+.card-info {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 0.6s ease;
 }
 
-.image-card:hover img {
-    transform: scale(1.05);
-    filter: grayscale(0%); /* Returns color on hover */
+.card:hover .card-info {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.author-name {
-    display: block;
-    margin-top: 15px;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--text-secondary);
+.card-info h3 {
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
-@media (max-width: 600px) {
-    .gallery-grid { padding: 0 20px 50px; }
+@media (max-width: 768px) {
+  .hero {
+    height: 60vh;
+  }
+  .card {
+    height: 320px;
+  }
 }

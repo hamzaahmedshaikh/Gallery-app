@@ -13,21 +13,19 @@ body {
 
 .hero {
   height: 75vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-content: center;
   text-align: center;
 }
 
 .hero h1 {
-  font-size: clamp(2.5rem, 6vw, 4.8rem);
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
   letter-spacing: 1px;
 }
 
 .hero p {
   opacity: .6;
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 #gallery {
@@ -41,23 +39,25 @@ body {
 }
 
 @media (max-width: 600px) {
-  #gallery { column-count: 1; padding: 1.5rem; }
+  #gallery { column-count: 1; padding: 1.4rem; }
 }
 
 .card {
   break-inside: avoid;
   margin-bottom: 1.2rem;
   position: relative;
+  border-radius: 18px;
   overflow: hidden;
-  border-radius: 20px;
-  transform-style: preserve-3d;
+  aspect-ratio: 3 / 4;
+  background: #111;
 }
 
 .card img {
   width: 100%;
-  height: 120%;
+  height: 110%;
   object-fit: cover;
-  transition: transform 1.4s cubic-bezier(.19,1,.22,1);
+  transform: translateY(0) scale(1.05);
+  transition: transform 1.2s cubic-bezier(.19,1,.22,1);
 }
 
 .card::after {
@@ -69,16 +69,16 @@ body {
 
 .info {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
-  font-size: .9rem;
+  bottom: 18px;
+  left: 18px;
+  font-size: .85rem;
   opacity: 0;
-  transform: translateY(15px);
+  transform: translateY(12px);
   transition: .6s ease;
 }
 
 .card:hover img {
-  transform: scale(1.1);
+  transform: scale(1.12);
 }
 
 .card:hover .info {
@@ -93,10 +93,4 @@ body {
   background-image: url("https://grainy-gradients.vercel.app/noise.svg");
   opacity: .06;
   z-index: 100;
-  animation: grain 8s steps(10) infinite;
-}
-
-@keyframes grain {
-  0% { transform: translate(0,0); }
-  100% { transform: translate(-10%,10%); }
 }

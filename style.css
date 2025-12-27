@@ -5,44 +5,51 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
-  background: #0b0b0d;
+  background: #08080b;
   color: #fff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
   overflow-x: hidden;
 }
 
 .hero {
-  height: 80vh;
+  height: 75vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  background: radial-gradient(circle at top, #1a1a22, #0b0b0d);
 }
 
 .hero h1 {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: clamp(2.5rem, 6vw, 4.8rem);
   letter-spacing: 1px;
 }
 
 .hero p {
-  margin-top: 1rem;
-  opacity: 0.7;
+  opacity: .6;
+  margin-top: 12px;
 }
 
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+#gallery {
+  column-count: 3;
+  column-gap: 1.2rem;
   padding: 3rem;
 }
 
+@media (max-width: 1024px) {
+  #gallery { column-count: 2; }
+}
+
+@media (max-width: 600px) {
+  #gallery { column-count: 1; padding: 1.5rem; }
+}
+
 .card {
+  break-inside: avoid;
+  margin-bottom: 1.2rem;
   position: relative;
   overflow: hidden;
-  border-radius: 18px;
-  height: 420px;
+  border-radius: 20px;
   transform-style: preserve-3d;
 }
 
@@ -50,50 +57,46 @@ body {
   width: 100%;
   height: 120%;
   object-fit: cover;
-  transition: transform 1.2s ease;
-  will-change: transform;
+  transition: transform 1.4s cubic-bezier(.19,1,.22,1);
 }
 
 .card::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0,0,0,0) 40%,
-    rgba(0,0,0,0.6)
-  );
+  background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,.7));
 }
 
-.card:hover img {
-  transform: scale(1.08);
-}
-
-.card-info {
+.info {
   position: absolute;
   bottom: 20px;
   left: 20px;
-  z-index: 2;
+  font-size: .9rem;
   opacity: 0;
-  transform: translateY(20px);
-  transition: 0.6s ease;
+  transform: translateY(15px);
+  transition: .6s ease;
 }
 
-.card:hover .card-info {
+.card:hover img {
+  transform: scale(1.1);
+}
+
+.card:hover .info {
   opacity: 1;
   transform: translateY(0);
 }
 
-.card-info h3 {
-  font-size: 1.1rem;
-  font-weight: 500;
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: .06;
+  z-index: 100;
+  animation: grain 8s steps(10) infinite;
 }
 
-@media (max-width: 768px) {
-  .hero {
-    height: 60vh;
-  }
-  .card {
-    height: 320px;
-  }
+@keyframes grain {
+  0% { transform: translate(0,0); }
+  100% { transform: translate(-10%,10%); }
 }

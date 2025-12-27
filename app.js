@@ -1,33 +1,51 @@
-const gallery = document.getElementById("gallery");
+const gallery = document.getElementById("gallery")
+let page = 1
+let loading = false
 
-async function loadImages() {
-  const res = await fetch("https://picsum.photos/v2/list?page=1&limit=20");
-  const images = await res.json();
+const loadImages = async () => {
+  if (loading) return
+  loading = true
 
-  images.forEach((img, index) => {
-    const card = document.createElement("div");
-    card.className = "card";
+  const res = await fetch(`https://picsum.photos/v2/list?page=${page}&limit=12`)
+  const data = await res.json()
 
-    const image = document.createElement("img");
-    image.src = `https://picsum.photos/id/${img.id}/800/1000`;
-    image.alt = img.author;
+  data.forEach((img, i) => {
+    const card = document.createElement("div")
+    card.className = "card"
+    card.style.transform = `translateZ(${i * 5}px)`
 
-    const info = document.createElement("div");
-    info.className = "card-info";
-    info.innerHTML = `<h3>${img.author}</h3>`;
+    const image = document.createElement("img")
+    image.src = `https://picsum.photos/id/${img.id}/900/1200`
 
-    card.appendChild(image);
-    card.appendChild(info);
-    gallery.appendChild(card);
+    const info = document.createElement("div")
+    info.className = "info"
+    info.textContent = img.author
 
-    // Scroll-based parallax
-    window.addEventListener("scroll", () => {
-      const rect = card.getBoundingClientRect();
-      const speed = 0.25 + index * 0.02;
-      const offset = rect.top * speed;
-      image.style.transform = `translateY(${offset}px) scale(1.05)`;
-    });
-  });
+    card.appendChild(image)
+    card.appendChild(info)
+    gallery.appendChild(card)
+  })
+
+  page++
+  loading = false
 }
 
-loadImages();
+loadImages()
+
+window.addEventListener("scroll", () => {
+  const cards = document.querySelectorAll(".card")
+
+  cards.forEach((card, i) => {
+    const img = card.querySelector("img")
+    const rect = card.getBoundingClientRect()
+    const speed = 0.15 + i * 0.015
+    const y = rect.top * speed
+
+    img.style.transform = `translateY(${y}px) scale(1.08)`
+    card.style.filter = `blur(${Math.abs(y) / 250}px)`
+  })
+
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) {
+    loadImages()
+  }
+})

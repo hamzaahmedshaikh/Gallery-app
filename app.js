@@ -1,20 +1,21 @@
 const gallery = document.getElementById("gallery")
+
 let page = 1
-let loading = false
+let busy = false
+let cards = []
 
 const loadImages = async () => {
-  if (loading) return
-  loading = true
+  if (busy) return
+  busy = true
 
-  const res = await fetch(`https://picsum.photos/v2/list?page=${page}&limit=12`)
+  const res = await fetch(`https://picsum.photos/v2/list?page=${page}&limit=14`)
   const data = await res.json()
 
   data.forEach((img, i) => {
     const card = document.createElement("div")
     card.className = "card"
-    card.style.transform = `translateZ(${i * 5}px)`
 
-    const image = document.createElement("img")
+    const image = new Image()
     image.src = `https://picsum.photos/id/${img.id}/900/1200`
 
     const info = document.createElement("div")
@@ -24,28 +25,37 @@ const loadImages = async () => {
     card.appendChild(image)
     card.appendChild(info)
     gallery.appendChild(card)
+
+    cards.push({ card, image, speed: 0.12 + (i % 6) * 0.03 })
   })
 
   page++
-  loading = false
+  busy = false
 }
 
 loadImages()
 
-window.addEventListener("scroll", () => {
-  const cards = document.querySelectorAll(".card")
+let ticking = false
 
-  cards.forEach((card, i) => {
-    const img = card.querySelector("img")
+const animate = () => {
+  cards.forEach(({ card, image, speed }) => {
     const rect = card.getBoundingClientRect()
-    const speed = 0.15 + i * 0.015
-    const y = rect.top * speed
+    const offset = rect.top * speed
 
-    img.style.transform = `translateY(${y}px) scale(1.08)`
-    card.style.filter = `blur(${Math.abs(y) / 250}px)`
+    image.style.transform = `translateY(${offset}px) scale(1.08)`
+    card.style.filter = `blur(${Math.min(Math.abs(offset) / 300, 2)}px)`
   })
 
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) {
+  ticking = false
+}
+
+window.addEventListener("scroll", () => {
+  if (!ticking) {
+    requestAnimationFrame(animate)
+    ticking = true
+  }
+
+  if (window.innerHeight + window.scrollY > document.body.offsetHeight - 700) {
     loadImages()
   }
 })

@@ -1,52 +1,33 @@
-const galleryContainer = document.getElementById('gallery');
+const gallery = document.getElementById("gallery");
 
-const API_URL = 'https://picsum.photos/v2/list?limit=15';
+async function loadImages() {
+  const res = await fetch("https://picsum.photos/v2/list?page=1&limit=20");
+  const images = await res.json();
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-        }
+  images.forEach((img, index) => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const image = document.createElement("img");
+    image.src = `https://picsum.photos/id/${img.id}/800/1000`;
+    image.alt = img.author;
+
+    const info = document.createElement("div");
+    info.className = "card-info";
+    info.innerHTML = `<h3>${img.author}</h3>`;
+
+    card.appendChild(image);
+    card.appendChild(info);
+    gallery.appendChild(card);
+
+    // Scroll-based parallax
+    window.addEventListener("scroll", () => {
+      const rect = card.getBoundingClientRect();
+      const speed = 0.25 + index * 0.02;
+      const offset = rect.top * speed;
+      image.style.transform = `translateY(${offset}px) scale(1.05)`;
     });
-}, { threshold: 0.1 });
-
-async function loadGallery() {
-    try {
-        const response = await fetch(API_URL);
-        const images = await response.json();
-        
-        if (images.length === 0) {
-            galleryContainer.innerHTML = "<p>No images found.</p>";
-            return;
-        }
-
-        images.forEach(data => {
-            // OPTIMIZED: Transform the URL to get a specific size (500x500)
-            // The default download_url can be too large to load quickly
-            const optimizedUrl = `https://picsum.photos/id/${data.id}/500/500`;
-            
-            const card = createCard(data, optimizedUrl);
-            galleryContainer.appendChild(card);
-            observer.observe(card);
-        });
-    } catch (error) {
-        console.error("Error loading images:", error);
-        galleryContainer.innerHTML = "<p>API Error. Check your internet connection.</p>";
-    }
+  });
 }
 
-function createCard(data, url) {
-    const card = document.createElement('div');
-    card.className = 'image-card';
-    
-    card.innerHTML = `
-        <div class="img-wrapper">
-            <img src="${url}" alt="Photo by ${data.author}">
-        </div>
-        <span class="author-name">${data.author}</span>
-    `;
-    
-    return card;
-}
-
-loadGallery();
+loadImages();
